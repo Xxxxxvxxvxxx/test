@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Protected image demo</title>
+  <style>
+    .img { width: 320px; height: auto; display: block; margin: 16px 0; }
+  </style>
+</head>
+<body>
+  <img id="img1" class="img" alt="Image 1" data-src="IMG_1">
+  <img id="img2" class="img" alt="Image 2" data-src="IMG_2">
+
+  <script>
+    // Fetch URLs from a JSON file generated at deploy time
+    fetch('/assets/urls.json')
+      .then(r => r.json())
+      .then(map => {
+        const img1 = document.getElementById('img1');
+        const img2 = document.getElementById('img2');
+        img1.src = map[img1.dataset.src];  // e.g., map["IMG_1"] → "https://..."
+        img2.src = map[img2.dataset.src];
+      })
+      .catch(err => console.error('Failed to load URL map:', err));
+  </script>
+</body>
+</html>
