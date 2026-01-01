@@ -1,65 +1,37 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>My Web Tools</title>
+<title>My Tools</title>
 <style>
-body {
-  font-family: Arial, sans-serif;
-  text-align: center;
-  background: #111;
-  color: white;
-}
-#tools {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 15px;
-  padding: 20px;
-}
-.tool {
-  background: #222;
-  padding: 20px;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: .2s;
-}
-.tool:hover {
-  background: #0af;
-  color: black;
-}
+body{background:#111;color:#fff;font-family:Arial;text-align:center}
+#tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;padding:20px}
+.tool{background:#222;padding:20px;border-radius:10px;cursor:pointer}
+.tool:hover{background:#0af;color:#000}
 </style>
 </head>
 <body>
 
-<h1>🧰 My Web Tools</h1>
+<h1>My Web Tools</h1>
 <div id="tools">Loading...</div>
 
 <script>
-const user = "Xxxxxvxxvxxx";
-const repo = "test";
-const api = `https://api.github.com/repos/${user}/${repo}/contents/tools`;
-
-fetch(api)
-  .then(res => res.json())
-  .then(data => {
-    let html = "";
-    data.forEach(item => {
-      if(item.type === "dir") {
-        html += `
-          <div class="tool" onclick="openTool('${item.name}')">
-            📌 ${item.name}
-          </div>
-        `;
-      }
-    });
-    if (html === "") html = "No tools found!";
-    document.getElementById("tools").innerHTML = html;
-  })
-  .catch(err => {
-    document.getElementById("tools").innerHTML = "Error loading tools.";
+fetch("https://api.github.com/repos/Xxxxxvxxvxxx/test/contents/tools")
+.then(r=>r.json())
+.then(data=>{
+  let out="";
+  data.forEach(f=>{
+    if(f.type==="dir"){
+      out+=`<div class="tool" onclick="openTool('${f.name}')">${f.name}</div>`;
+    }
   });
+  document.getElementById("tools").innerHTML = out || "No tools found";
+})
+.catch(e=>{
+  document.getElementById("tools").innerHTML="Error loading tools";
+});
 
-function openTool(name){
-  window.location.href = "tools/" + name + "/";
+function openTool(n){
+  location.href = "tools/"+n+"/";
 }
 </script>
 
