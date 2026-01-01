@@ -4,27 +4,27 @@
 <title>My Web Tools</title>
 <style>
 body {
-  font-family: Arial;
-  background:#111;
-  color:white;
-  text-align:center;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background: #111;
+  color: white;
 }
 #tools {
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:15px;
-  padding:20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  padding: 20px;
 }
 .tool {
-  background:#222;
-  padding:20px;
-  border-radius:10px;
-  cursor:pointer;
-  transition:.2s;
+  background: #222;
+  padding: 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: .2s;
 }
 .tool:hover {
-  background:#0af;
-  color:black;
+  background: #0af;
+  color: black;
 }
 </style>
 </head>
@@ -34,8 +34,8 @@ body {
 <div id="tools">Loading...</div>
 
 <script>
-const user = "YOUR_GITHUB_USERNAME";
-const repo = "toolbox";   // your repo name
+const user = "Xxxxxvxxvxxx";
+const repo = "test";
 const api = `https://api.github.com/repos/${user}/${repo}/contents/tools`;
 
 fetch(api)
@@ -46,12 +46,16 @@ fetch(api)
       if(item.type === "dir") {
         html += `
           <div class="tool" onclick="openTool('${item.name}')">
-            📂 ${item.name}
+            📌 ${item.name}
           </div>
         `;
       }
     });
+    if (html === "") html = "No tools found!";
     document.getElementById("tools").innerHTML = html;
+  })
+  .catch(err => {
+    document.getElementById("tools").innerHTML = "Error loading tools.";
   });
 
 function openTool(name){
