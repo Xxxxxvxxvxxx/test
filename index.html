@@ -1,35 +1,87 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>My Tools</title>
+<meta charset="UTF-8">
+<title>Web Tools Dashboard</title>
 <style>
-body{background:#111;color:#fff;font-family:Arial;text-align:center}
-#tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;padding:20px}
-.tool{background:#222;padding:20px;border-radius:10px;cursor:pointer}
-.tool:hover{background:#0af;color:#000}
+body{
+  margin:0;
+  font-family:Inter,system-ui;
+  background:#0b0b0f;
+  color:#fff;
+}
+.header{
+  padding:30px;
+}
+h1{
+  color:#8b5cf6;
+  font-size:32px;
+}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:20px;
+  padding:30px;
+}
+.card{
+  background:linear-gradient(145deg,#111,#0b0b0f);
+  border-radius:16px;
+  padding:20px;
+  box-shadow:0 0 25px rgba(139,92,246,.15);
+  cursor:pointer;
+  transition:.25s;
+}
+.card:hover{
+  transform:translateY(-5px);
+  box-shadow:0 0 40px rgba(139,92,246,.4);
+}
+.title{
+  font-size:20px;
+  margin-bottom:8px;
+}
+.about{
+  color:#aaa;
+  font-size:14px;
+}
 </style>
 </head>
 <body>
 
-<h1>My Web Tools</h1>
-<div id="tools">Loading...</div>
+<div class="header">
+  <h1>Dashboard</h1>
+  <p>Welcome to your Web Tools control center</p>
+</div>
+
+<div class="grid" id="tools">
+  Loading...
+</div>
 
 <script>
-fetch("https://api.github.com/repos/Xxxxxvxxvxxx/test/contents/tools")
+const user = "Xxxxxvxxvxxx";
+const repo = "test";
+const base = `https://api.github.com/repos/${user}/${repo}/contents/tools`;
+
+fetch(base)
 .then(r=>r.json())
-.then(data=>{
+.then(folders=>{
   let out="";
-  data.forEach(f=>{
+  folders.forEach(f=>{
     if(f.type==="dir"){
-      out+=`<div class="tool" onclick="openTool('${f.name}')">${f.name}</div>`;
+      const url = `https://raw.githubusercontent.com/${user}/${repo}/main/tools/${f.name}/description.json`;
+      fetch(url)
+      .then(r=>r.json())
+      .then(d=>{
+        out+=`
+          <div class="card" onclick="openTool('${f.name}')">
+            <div class="title">${d.title}</div>
+            <div class="about">${d.about}</div>
+          </div>
+        `;
+        document.getElementById("tools").innerHTML = out;
+      });
     }
   });
-  document.getElementById("tools").innerHTML = out || "No tools found";
-})
-.catch(e=>{
-  document.getElementById("tools").innerHTML="Error loading tools";
 });
-
 function openTool(n){
   location.href = "tools/"+n+"/";
 }
