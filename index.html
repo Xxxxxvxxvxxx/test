@@ -88,8 +88,12 @@ h1{
 <div class="grid" id="tools">Loading...</div>
 
 <script>
-const user = "Xxxxxvxxvxxx";
-const repo = "test";
+const host = location.hostname;
+const path = location.pathname.split("/").filter(Boolean);
+
+const user = host.replace(".github.io", "");
+const repo = path[0];
+
 const base = `https://api.github.com/repos/${user}/${repo}/contents/tools`;
 
 fetch(base)
