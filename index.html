@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Web Tools Dashboard</title>
+
 <style>
 body{
   margin:0;
@@ -33,11 +34,38 @@ h1{
   max-width:300px;
   width:100%;
   border:1px solid #2a2a2a;
+  position:relative;
 }
 .card:hover{
   transform:translateY(-5px);
   box-shadow:0 0 40px rgba(139,92,246,.4);
 }
+
+.index{
+  position:absolute;
+  top:12px;
+  right:15px;
+  color:#8b5cf6;
+  font-weight:bold;
+  font-size:14px;
+}
+
+.iconBox{
+  width:48px;
+  height:48px;
+  background:#2B2140;
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin-bottom:15px;
+}
+.iconBox img{
+  width:26px;
+  height:26px;
+  filter: brightness(0) saturate(100%) invert(41%) sepia(71%) saturate(660%) hue-rotate(230deg);
+}
+
 .title{
   font-size:20px;
   margin-bottom:8px;
@@ -55,9 +83,7 @@ h1{
   <p>Welcome to your Web Tools control center</p>
 </div>
 
-<div class="grid" id="tools">
-  Loading...
-</div>
+<div class="grid" id="tools">Loading...</div>
 
 <script>
 const user = "Xxxxxvxxvxxx";
@@ -67,24 +93,45 @@ const base = `https://api.github.com/repos/${user}/${repo}/contents/tools`;
 fetch(base)
 .then(r=>r.json())
 .then(folders=>{
-  let out="";
+  document.getElementById("tools").innerHTML="";
+  let i = 1;
   folders.forEach(f=>{
     if(f.type==="dir"){
-      const url = `https://raw.githubusercontent.com/${user}/${repo}/main/tools/${f.name}/description.json`;
-      fetch(url)
-      .then(r=>r.json())
-      .then(d=>{
-        out+=`
-          <div class="card" onclick="openTool('${f.name}')">
-            <div class="title">${d.title}</div>
-            <div class="about">${d.about}</div>
-          </div>
-        `;
-        document.getElementById("tools").innerHTML = out;
-      });
+      loadTool(f.name, i++);
     }
   });
 });
+
+function loadTool(name, index){
+  const descURL = `https://raw.githubusercontent.com/${user}/${repo}/main/tools/${name}/description.json`;
+  const iconURL = `https://raw.githubusercontent.com/${user}/${repo}/main/tools/${name}/icon.svg`;
+
+  fetch(descURL)
+  .then(r=>r.json())
+  .then(d=>{
+    fetch(iconURL, {method:"HEAD"})
+    .then(res=>{
+      let iconHTML="";
+      if(res.ok){
+        iconHTML = `
+          <div class="iconBox">
+            <img src="${iconURL}">
+          </div>
+        `;
+      }
+
+      document.getElementById("tools").innerHTML += `
+        <div class="card" onclick="openTool('${name}')">
+          <div class="index">#${index}</div>
+          ${iconHTML}
+          <div class="title">${d.title}</div>
+          <div class="about">${d.about}</div>
+        </div>
+      `;
+    });
+  });
+}
+
 function openTool(n){
   location.href = "tools/"+n+"/";
 }
