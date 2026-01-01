@@ -92,7 +92,7 @@ const host = location.hostname;
 const path = location.pathname.split("/").filter(Boolean);
 
 const user = host.replace(".github.io", "");
-const repo = path[0];
+const repo = "test";
 
 const base = `https://api.github.com/repos/${user}/${repo}/contents/tools`;
 
